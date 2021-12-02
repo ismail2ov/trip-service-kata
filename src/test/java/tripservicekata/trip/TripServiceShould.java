@@ -1,5 +1,6 @@
 package tripservicekata.trip;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tripservicekata.exception.UserNotLoggedInException;
 import tripservicekata.user.User;
@@ -15,32 +16,37 @@ class TripServiceShould {
     public static final Trip TRIP_TO_MALLORCA = new Trip();
 
     private User loggedUser;
+    private TestableTripService tripService;
+    private User friend;
 
-    @Test
-    void throw_an_exception_when_user_is_not_logged_in() {
-        TripService tripService = new TestableTripService();
-        loggedUser = null;
-
-        assertThatThrownBy(() -> tripService.getTripsByUser(loggedUser)).isInstanceOf(UserNotLoggedInException.class);
+    @BeforeEach
+    void setUp() {
+        this.tripService = new TestableTripService();
+        this.friend = new User();
     }
 
     @Test
-    void return_empty_trips_list_when_user_is_logged_in() throws UserNotLoggedInException {
-        TripService tripService = new TestableTripService();
+    void throw_an_exception_when_user_is_not_logged_in() {
+        loggedUser = null;
+
+        assertThatThrownBy(() -> tripService.getTripsByUser(friend)).isInstanceOf(UserNotLoggedInException.class);
+    }
+
+    @Test
+    void return_empty_trips_list_when_users_are_not_friends() throws UserNotLoggedInException {
         loggedUser = new User();
 
-        List<Trip> actual = tripService.getTripsByUser(loggedUser);
+        List<Trip> actual = tripService.getTripsByUser(friend);
 
         assertThat(actual).isEmpty();
     }
 
     @Test
     void return_trips_list_when_users_are_friends() throws UserNotLoggedInException {
-        TripService tripService = new TestableTripService();
         loggedUser = new User();
+        User anotherUser = new User();
 
-        User friend = new User();
-        friend.addFriend(new User());
+        friend.addFriend(anotherUser);
         friend.addFriend(loggedUser);
         friend.addTrip(TRIP_TO_IBIZA);
         friend.addTrip(TRIP_TO_MALLORCA);
