@@ -1,13 +1,16 @@
 package tripservicekata.trip;
 
+import lombok.RequiredArgsConstructor;
 import tripservicekata.exception.UserNotLoggedInException;
 import tripservicekata.user.User;
-import tripservicekata.user.UserSession;
 
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class TripService {
+
+    private final TripRepository tripRepository;
 
     public List<Trip> getTripsByUser(User user, User loggedUser) throws UserNotLoggedInException {
         validateIfUserIsAuthenticated(loggedUser);
@@ -28,7 +31,7 @@ public class TripService {
         }
     }
 
-    protected List<Trip> getTripsFor(User user) {
-        return TripRepository.findTripsByUser(user);
+    private List<Trip> getTripsFor(User user) {
+        return tripRepository.findTripsFor(user);
     }
 }

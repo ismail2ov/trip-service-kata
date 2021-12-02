@@ -2,6 +2,10 @@ package tripservicekata.trip;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import tripservicekata.exception.UserNotLoggedInException;
 import tripservicekata.user.User;
 
@@ -9,19 +13,27 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class TripServiceShould {
 
     public static final Trip TRIP_TO_IBIZA = new Trip();
     public static final Trip TRIP_TO_MALLORCA = new Trip();
 
     private User loggedUser;
-    private TestableTripService tripService;
     private User friend;
+
+    @Mock
+    private TripRepository tripRepository;
+
+    @InjectMocks
+    private TripService tripService;
+
+
 
     @BeforeEach
     void setUp() {
-        this.tripService = new TestableTripService();
         this.friend = new User();
     }
 
@@ -51,16 +63,10 @@ class TripServiceShould {
         friend.addTrip(TRIP_TO_IBIZA);
         friend.addTrip(TRIP_TO_MALLORCA);
 
+        when(tripRepository.findTripsFor(friend)).thenReturn(friend.trips());
+
         List<Trip> actual = tripService.getTripsByUser(friend, loggedUser);
 
         assertThat(actual).containsExactly(TRIP_TO_IBIZA, TRIP_TO_MALLORCA);
-    }
-
-    private class TestableTripService extends TripService {
-
-        @Override
-        protected List<Trip> getTripsFor(User user) {
-            return user.trips();
-        }
     }
 }
