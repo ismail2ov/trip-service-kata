@@ -21,12 +21,16 @@ public class TripService {
                 }
             }
             if (isFriend) {
-                tripList = TripRepository.findTripsByUser(user);
+                tripList = getTripsFor(user);
             }
             return tripList;
         } else {
             throw new UserNotLoggedInException();
         }
+    }
+
+    protected List<Trip> getTripsFor(User user) {
+        return TripRepository.findTripsByUser(user);
     }
 
     protected User getLoggedUser() {
