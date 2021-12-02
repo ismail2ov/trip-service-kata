@@ -12,4 +12,7 @@ public class TripRepository {
                 "TripRepository should not be invoked on an unit test.");
     }
 
+    public List<Trip> findTripsFor(User user) {
+        return user.trips();
+    }
 }
