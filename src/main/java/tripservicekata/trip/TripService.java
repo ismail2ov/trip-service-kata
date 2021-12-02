@@ -4,25 +4,28 @@ import tripservicekata.exception.UserNotLoggedInException;
 import tripservicekata.user.User;
 import tripservicekata.user.UserSession;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TripService {
 
     public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
-        List<Trip> tripList = new ArrayList<Trip>();
-        User loggedUser = getLoggedUser();
-        boolean isFriend = false;
+        validateIfUserIsAuthenticated(getLoggedUser());
+
+        return getTripsFor(user, getLoggedUser());
+    }
+
+    private List<Trip> getTripsFor(User user, User loggedUser) {
+        if (user.isFriendWith(loggedUser)) {
+            return getTripsFor(user);
+        }
+        return Collections.emptyList();
+    }
+
+    private void validateIfUserIsAuthenticated(User loggedUser) throws UserNotLoggedInException {
         if (loggedUser == null) {
             throw new UserNotLoggedInException();
         }
-
-        isFriend = user.isFriendWith(loggedUser);
-
-        if (isFriend) {
-            tripList = getTripsFor(user);
-        }
-        return tripList;
     }
 
     protected List<Trip> getTripsFor(User user) {
