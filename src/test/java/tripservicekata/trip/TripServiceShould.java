@@ -29,14 +29,14 @@ class TripServiceShould {
     void throw_an_exception_when_user_is_not_logged_in() {
         loggedUser = null;
 
-        assertThatThrownBy(() -> tripService.getTripsByUser(friend)).isInstanceOf(UserNotLoggedInException.class);
+        assertThatThrownBy(() -> tripService.getTripsByUser(friend, loggedUser)).isInstanceOf(UserNotLoggedInException.class);
     }
 
     @Test
     void return_empty_trips_list_when_users_are_not_friends() throws UserNotLoggedInException {
         loggedUser = new User();
 
-        List<Trip> actual = tripService.getTripsByUser(friend);
+        List<Trip> actual = tripService.getTripsByUser(friend, loggedUser);
 
         assertThat(actual).isEmpty();
     }
@@ -51,16 +51,12 @@ class TripServiceShould {
         friend.addTrip(TRIP_TO_IBIZA);
         friend.addTrip(TRIP_TO_MALLORCA);
 
-        List<Trip> actual = tripService.getTripsByUser(friend);
+        List<Trip> actual = tripService.getTripsByUser(friend, loggedUser);
 
         assertThat(actual).containsExactly(TRIP_TO_IBIZA, TRIP_TO_MALLORCA);
     }
 
     private class TestableTripService extends TripService {
-        @Override
-        protected User getLoggedUser() {
-            return loggedUser;
-        }
 
         @Override
         protected List<Trip> getTripsFor(User user) {

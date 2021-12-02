@@ -9,10 +9,10 @@ import java.util.List;
 
 public class TripService {
 
-    public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
-        validateIfUserIsAuthenticated(getLoggedUser());
+    public List<Trip> getTripsByUser(User user, User loggedUser) throws UserNotLoggedInException {
+        validateIfUserIsAuthenticated(loggedUser);
 
-        return getTripsFor(user, getLoggedUser());
+        return getTripsFor(user, loggedUser);
     }
 
     private List<Trip> getTripsFor(User user, User loggedUser) {
@@ -31,9 +31,4 @@ public class TripService {
     protected List<Trip> getTripsFor(User user) {
         return TripRepository.findTripsByUser(user);
     }
-
-    protected User getLoggedUser() {
-        return UserSession.getInstance().getLoggedUser();
-    }
-
 }
