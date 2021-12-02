@@ -40,6 +40,7 @@ class TripServiceShould {
         loggedUser = new User();
 
         User friend = new User();
+        friend.addFriend(new User());
         friend.addFriend(loggedUser);
         friend.addTrip(TRIP_TO_IBIZA);
         friend.addTrip(TRIP_TO_MALLORCA);
