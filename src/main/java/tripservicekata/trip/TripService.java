@@ -17,12 +17,8 @@ public class TripService {
             throw new UserNotLoggedInException();
         }
 
-        for (User friend : user.getFriends()) {
-            if (friend.equals(loggedUser)) {
-                isFriend = true;
-                break;
-            }
-        }
+        isFriend = user.isFriendWith(loggedUser);
+
         if (isFriend) {
             tripList = getTripsFor(user);
         }
