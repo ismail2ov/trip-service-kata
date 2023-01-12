@@ -41,4 +41,20 @@ class TripServiceTest {
 
     assertThat(actual).isEmpty();
   }
+
+  @Test
+  void when_users_are_friends_then_returns_list_with_trips() throws UserNotLoggedInException {
+    User loggedUser = mock(User.class);
+    User friendUser = mock(User.class);
+    doReturn(loggedUser).when(tripService).getLoggedUser();
+    doReturn(List.of(loggedUser)).when(friendUser).getFriends();
+    Trip trip1 = mock(Trip.class);
+    Trip trip2 = mock(Trip.class);
+
+    doReturn(List.of(trip1, trip2)).when(tripService).getTripsFor(friendUser);
+
+    List<Trip> actual = tripService.getTripsByUser(friendUser);
+
+    assertThat(actual).containsExactly(trip1, trip2);
+  }
 }
